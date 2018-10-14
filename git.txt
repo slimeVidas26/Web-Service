@@ -1,0 +1,24 @@
+git --version
+git config --global user.name "slimeVidas26"
+git config --global user.email "dahan.isaac@gmail.com"
+git config --list
+git config user.name
+git help config OR git config --help
+pwd : show the current location
+git add . : STAGING
+git commit -m "some message"
+git log
+git status
+git diff
+git diff --staged
+git rm second.html : REMOVE FILE
+git clean -f : WILL REMOVE ALL UNTRACKED FILES
+git reset HEAD Page1.html
+git tag -a t1 -m "my msg"
+git log --pretty=format:"%an. Hash:%h. Msg:%s"
+git checkout fb9c4f5
+git checkout master
+git branch branch1
+
+https://github.community/t5/How-to-use-Git-and-GitHub/Git-via-SSH-from-Windows-returns-Permission-Denied/m-p/9336
+https://stackoverflow.com/questions/1221840/remote-origin-already-exists-on-git-push-to-a-new-repository
