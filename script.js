@@ -10,7 +10,7 @@ $(function () {
         //     {"id":3,"name":"Henry Miller"}
         // ]
         // ajax request call to display in the list div the list of persons
-
+         $('#spinner').show();
         $.ajax({
             url: 'getList.php',
             method: 'GET',
@@ -23,7 +23,9 @@ $(function () {
                     showPerson($(this).data('id'));
                 }).appendTo($ul);
             }
+            $('#spinner').hide();
             $('#list').show();
+           
 
         })
     }
@@ -34,6 +36,7 @@ $(function () {
         //create getPerson.php file
         //we want to display the details of the person that has ID = pid
         //this ID is provided by the data-id of the <li>
+        $('#spinner').show();
         $.ajax({
             url: "getPerson.php",
             method: "GET",
@@ -46,13 +49,15 @@ $(function () {
             console.log(r);
             if (!r.success) {
                 $('#notify').show();
+                notify('Bad request' , true);
             } else {
                 //display person details
+                //alert(r.data.id)
                 $("#person h3").text(r.data.name);
                 $("#person .email").text(r.data.email);
                 $("#person .phone").text(r.data.phone);
                 $("#list").hide();
-                $("#person").show();
+                
 
                 //show filled form
                 var es = document.forms.edit.elements;
@@ -61,14 +66,60 @@ $(function () {
                 es.email.value = r.data.email;
                 es.phone.value = r.data.phone;
 
+                $('#spinner').hide();
+                $("#person").show();
+
 
             }
 
         });
     }
 
+    function notify(str , isError){
+        if(!str){
+         $('#notify').hide();
+        }
+        else{
+            $('#notify').html(str).removeClass().addClass(isError ? 'bg-danger':'bg-success').show();
+
+        }
+    }
+
     function validateForm(){
-        
+        var err = [];
+        var params = null;
+        var es = document.forms.edit.elements;
+        if(es.name.value.trim()==''){
+            err.push(name);
+        }
+        if(es.email.value.trim()==''){
+            err.push(email);
+        }
+        if(es.phone.value.trim()==''){
+            err.push(phone);
+        }
+        if(err.length){
+            notify('All fields are required ! missing'+err.join(', '),true);
+        }
+    else{
+        params = {
+            name :  es.name.value.trim(),
+            email : es.email.value.trim(),
+            phone : es.phone.value.trim()
+        }
+
+        if(person.id){
+            params.id = person.id;
+        }
+        savePerson(params);
+    }
+
+    }
+
+    function savePerson(params){
+        //this function will use the dummyPerson.php file
+        //create dummyPerson.php file
+    
     }
 
     $('#person .back').on('click', function () {
@@ -88,6 +139,8 @@ $(function () {
     });
 
     $('.save').on('click', function () {
+        validateForm();
+        
         $('#edit').hide();
         $('#list').show();
 
