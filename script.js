@@ -20,17 +20,37 @@ $(function(){
             console.log(r);
             for(let i in r){
             $(`<li data-id =${r[i].id} >${r[i].name}</li>`).on('click',function(){
-                showPerson($(this).data('id'))
+                showPerson($(this).data('id'));
             }).appendTo($ul);
             }
-            $('#person').hide();
             $('#list').show();
 
         })
     }
 
     function showPerson(pid){
-        console.log('id',pid);
+        //console.log('id',pid);
+        //this function will make a request to the getPerson.php file
+        //create getPerson.php file
+        //we want to display the details of the person that has ID = pid
+        //this ID is provided by the data-id of the <li>
+        $.ajax({
+            url:"getPerson.php",
+            method: "GET",
+            data:{id:pid},
+            dataType: "json"
+
+        }).done(function(r){
+            console.log(r);
+            $("#person h3").text(r.data.name);
+            $("#person .email").text(r.data.email);
+            $("#person .phone").text(r.data.phone);
+
+            
+            $("#list").hide();
+            $("#person").show();
+
+        });
     }
 
     
