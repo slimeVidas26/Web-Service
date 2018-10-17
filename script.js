@@ -1,5 +1,7 @@
 $(function () {
 
+    var person = {};
+
     function loadList() {
         // display onLoad the list of persons listed in the getList.php file
         // create the getList.php file
@@ -36,42 +38,114 @@ $(function () {
         //create getPerson.php file
         //we want to display the details of the person that has ID = pid
         //this ID is provided by the data-id of the <li>
+        $('#list').hide();
         $('#spinner').show();
         $.ajax({
             url: "getPerson.php",
             method: "GET",
-            data: {
-                id: pid
-            },
+            data: {id: pid},
             dataType: "json"
 
         }).done(function (r) {
             console.log(r);
             if (!r.success) {
-                $('#notify').show();
-                notify('Bad request' , true);
+                notify(r.error , true);
+                $('#spinner').hide();
+                $('#list').show();
             } else {
                 //display person details
                 //alert(r.data.id)
-                $("#person h3").text(r.data.name);
+                person = r.data;
+                $("#person .name").text(r.data.name);
                 $("#person .email").text(r.data.email);
                 $("#person .phone").text(r.data.phone);
-                $("#list").hide();
-                
-
                 //show filled form
                 var es = document.forms.edit.elements;
                 //console.log(es);
                 es.name.value = r.data.name;
                 es.email.value = r.data.email;
                 es.phone.value = r.data.phone;
-
+                $('#edit h3').text('Edit Person');
+                $('#edit .delete').show();
                 $('#spinner').hide();
                 $("#person").show();
-
-
             }
 
+        });
+    }
+
+    function savePerson(params){
+        //this function will use the dummyPerson.php file
+        //create dummyPerson.php file
+        //calling this file will return an ID
+        $('#edit').hide();
+        $('#spinner').show();
+        $.ajax({
+            url : "dummyPerson.php",
+            method : 'POST',
+            data : params,
+            dataType : 'json'
+        }).done(function(r){
+           
+            //console.log(r.error)
+
+            if(!r.success){
+                notify(r.error,true);
+                $('#spinner').hide();
+                $('#list').show();
+            }
+            else{
+                if(person.id){
+                 notify(params.name + ' saved');
+                 $('#person .name').text(params.name);
+          $('#person .email').text(params.email);
+          $('#person .phone').text(params.phone);
+          $('#list li[data-id="'+person.id+'"]').text(params.name);
+          $('#spinner').hide();
+          $('#person').show();
+                }
+                else{
+                    notify(params.name + ' created');
+                    person.id = r.id;
+                    person.email = params.email;
+                    person.phone = params.phone;
+                    person.name = params.name;
+                    $('#person .name').text(params.name);
+                    $('#person .email').text(params.email);
+                    $('#person .phone').text(params.phone);
+                    $('<li data-id="'+person.id+'">'+person.name+'</li>')
+                    .on('click',function() {
+                      showPerson($(this).data('id'));
+                    }).appendTo($('#list ul'));
+                    $('#spinner').hide();
+                    $('#person').show();
+                }
+            }
+
+        })
+
+    
+    }
+    function deleteUser() {
+        $('#edit').hide();
+        $('#spinner').show();
+        $.ajax({
+          url: 'dummyPerson.php',
+          method: 'GET',
+          data: {id:person.id},
+          dataType: 'json'
+        }).done(function(r) {
+          if(!r.success) {
+            notify(r.error,true);
+            $('#spinner').hide();
+            $('#list').show();
+          }
+          else {
+            notify(person.name + ' deleted');
+            $('#list li[data-id="'+person.id+'"]').remove();
+            $('#spinner').hide();
+            $('#list').show();
+          }
         });
     }
 
@@ -116,45 +190,57 @@ $(function () {
 
     }
 
-    function savePerson(params){
-        //this function will use the dummyPerson.php file
-        //create dummyPerson.php file
-    
+   
+    function addNewPerson(){
+        person = {};
+        var es = document.forms.edit.elements;
+        es.name.value = '';
+        es.email.value = '';
+        es.phone.value = '';
+        $('#edit h3').text('Add person');
+        $('#edit .delete').hide();
+        $('#list').hide();
+        $('#edit').show();
     }
 
     $('#person .back').on('click', function () {
-        $('#list').show();
         $('#person').hide();
+        $('#list').show();
+       
     });
 
-    $('#edit .back').on('click', function () {
-        $('#edit').hide();
-        $('#person').show();
-    });
+    
 
-    $('.edit').on('click', function () {
+    $('#person .edit').on('click', function () {
         $('#person').hide();
         $('#edit').show();
 
     });
-
-    $('.save').on('click', function () {
-        validateForm();
-        
+    $('#edit .back').on('click',function() {
+        notify();
         $('#edit').hide();
-        $('#list').show();
+        if(person.id) {
+          $('#person').show();
+        }
+        else {
+          $('#list').show();
+        }
+      });
+
+    
+
+    $('#edit .save').on('click', function () {
+        validateForm();
 
     });
 
+    $('#deleteConfirm .delete').on('click',function() {
+        deleteUser();
+      });
 
-
-
-
-
+    $('#list .create').on('click',function(){
+        addNewPerson();
+    });
 
     loadList();
-
-
-
-
 });

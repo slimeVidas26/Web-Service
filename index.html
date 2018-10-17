@@ -32,6 +32,7 @@
 
                     <div id="person">
                         <h3></h3>
+                        <p class="name"></p>
                         <p class="email"></p>
                         <p class="phone"></p>
                         <p>
@@ -42,6 +43,7 @@
                     </div>
 
                     <div id="edit">
+                            <h3></h3>
                         <form name = "edit" action="">
                             <div class="form-group">
                                     <label for="name">Name :</label>
@@ -61,7 +63,7 @@
                             <div class="form-group">
                                     <button type="button" class=" back btn btn-primary">Back</button>
                                     <button type="button" class=" save btn btn-success">Save</button>
-                                    <button type="button" class=" delete btn btn-warning">Delete</button>
+                                    <button type="button" class="delete btn btn-danger"data-toggle="modal" data-target="#deleteConfirm">Delete</button>
                                 </div> 
                         </form>
                     </div>
@@ -79,6 +81,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+<div id="deleteConfirm" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+    
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Delete Person</h4>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure ??</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Never mind</button>
+                <button type="button" class="delete btn btn-danger" data-dismiss="modal">Do It!</button>
+              </div>
+          </div>
+    
+        </div>
+      </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
